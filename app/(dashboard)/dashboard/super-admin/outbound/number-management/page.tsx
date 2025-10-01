@@ -109,6 +109,8 @@ function AIFilesManagement() {
   const auth = useAuth();
   const { uploadForm, uploading } = useFormUpload({
     url: `${env.NEXT_PUBLIC_API_BASE_URL_AI_INBOUND}/service-knowledge/knowledge-base/file`,
+    onSuccess: () => toast.success("File uploaded successfully!"),
+    onError: (error) => toast.error(error.message),
   });
 
   const [formData, setFormData] = useState({
@@ -165,11 +167,7 @@ function AIFilesManagement() {
       }
     );
 
-    const updateAgentResponse = await updateAgent.json();
-
-    if (updateAgentResponse.success) {
-      toast.success("Successful");
-    }
+    await updateAgent.json();
   };
 
   return (

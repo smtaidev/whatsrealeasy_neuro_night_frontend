@@ -91,15 +91,13 @@ export default function CreateInboundAgent() {
 
         if (createAgentResponse.success) {
           toast.success("Agent created successfully");
-        } else {
-          toast.error(createAgentResponse.message);
         }
       },
       { client: true }
     );
   };
   return (
-    <div>
+    <>
       <form onSubmit={handleSubmit}>
         <div className="flex flex-col gap-4">
           <div className="flex gap-4">
@@ -142,6 +140,6 @@ export default function CreateInboundAgent() {
           <Button size="sm">Create Agent</Button>
         </div>
       </form>
-    </div>
+    </>
   );
 }
