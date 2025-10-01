@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import React from "react";
 import { cn } from "@/lib/utils";
 import { useSidebar } from "./SidebarProvider";
+import Image from "next/image";
 
 export default function Sidebar({ children }: React.PropsWithChildren) {
   const { handlePointerEnter, handlePointerLeave, isCollapsedSidebar } =
@@ -51,7 +52,15 @@ function SidebarHeader() {
         animate={{ opacity: 1 }}
         className="shrink-0 flex w-full justify-center"
       >
-        AI
+        <Image
+          src={
+            "https://res.cloudinary.com/dazooknyy/image/upload/v1759279032/whats-real-easy-logo_hoddtr.jpg"
+          }
+          alt="Logo"
+          width={140}
+          height={40}
+          className="w-10 h-10"
+        />
       </motion.div>
     </div>
   );
