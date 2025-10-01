@@ -91,10 +91,15 @@ export default async function AdminAnalyticsPage({
     );
     if (!response.ok) return Promise.reject("Failed request");
     const data = await response.json();
+    
     return data as AnalyticsApiResponse;
   });
 
   const data = (result.data?.success && result.data.data) as AnalyticsData;
+
+
+
+  if(!data) return <div className="text-center">No Data</div>
 
   return (
     <>
