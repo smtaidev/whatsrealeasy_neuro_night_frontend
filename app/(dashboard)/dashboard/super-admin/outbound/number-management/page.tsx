@@ -36,8 +36,10 @@ function HumanFilesManagement() {
     files: [] as File[],
   });
 
+
+
   const { uploadForm, uploading } = useFormUpload({
-    url: `${env.NEXT_PUBLIC_API_BASE_URL_AI_OUTBOUND}/outbound/start-batch-call?starting_time=${state.callStartTime}&call_duration=${state.callDuration}&call_gap=${state.callGap}&total_numbers_in_each_batch=${state.batchNumber}`,
+    url: `https://docs-outbound.advanceaimarketing.cloud/outbound/start-batch-call?starting_time=${state.callStartTime}&call_duration=${state.callDuration}&call_gap=${state.callGap}&total_numbers_in_each_batch=${state.batchNumber}`,
   });
 
   const handleSubmit = async (e: FormEvent) => {

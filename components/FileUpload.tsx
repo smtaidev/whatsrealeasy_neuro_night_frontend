@@ -491,6 +491,8 @@ export function useFormUpload({
     percentage: 0,
   });
 
+ 
+
   const uploadForm = async (formData: Record<string, unknown>) => {
     setUploading(true);
     setProgress({ loaded: 0, total: 0, percentage: 0 });
