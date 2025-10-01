@@ -160,8 +160,6 @@ export default async function OutboundCallLogs({
     meetLink: item.bookings ? item.bookings.meetLink : null,
   }));
 
-  console.log(tableDataRaw);
-
   // Normalize data
   const normalizedData: CallLogRow[] = normalizeCallLogData(tableDataRaw);
 

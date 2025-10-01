@@ -117,7 +117,6 @@ export default function ScheduleForm() {
       <Button
         onClick={() => {
           toast.success(`All calls have been calculated ${totalCallsToday}`);
-          console.log(totalCallsToday);
         }}
         size="sm"
       >

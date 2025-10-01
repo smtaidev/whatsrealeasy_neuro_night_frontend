@@ -26,8 +26,6 @@ export default function CreateInboundAgent() {
 
   const { uploadForm, uploading } = useFormUpload({
     url: `${env.NEXT_PUBLIC_API_BASE_URL_AI_INBOUND}/service-knowledge/knowledge-base/file`,
-    onSuccess: (data) => console.log("Success!", data),
-    onError: (error) => console.error("Error!", error),
   });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -51,8 +49,6 @@ export default function CreateInboundAgent() {
 
         const serviceCreateResponse: { db_record: { _id: string } } =
           await serviceCreate.json();
-
-        console.log(serviceCreateResponse);
 
         await uploadForm({
           serviceId: serviceCreateResponse.db_record._id,
@@ -130,8 +126,6 @@ export default function CreateInboundAgent() {
             <FileUpload
               onFilesChange={(files) => setFormData({ ...formData, files })}
               disabled={uploading}
-              onUploadSuccess={(data) => console.log("Uploaded!", data)}
-              onUploadError={(error) => console.error("Error:", error)}
               accept=".txt,text/plain"
             />
           </div>
