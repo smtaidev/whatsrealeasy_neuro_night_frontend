@@ -1,4 +1,5 @@
 import Button from "@/components/Button";
+import PrintButton from "@/components/PrintButton";
 import { env } from "@/env";
 import Pagination from "@/features/table/components/Pagination";
 import SearchField from "@/features/table/components/SearchField";
@@ -47,6 +48,7 @@ type CallLogApiRow = {
   createdAt: string;
   updatedAt: string;
   service: Service;
+  email: string | null;
   bookings: null | { meetLink: string };
 };
 
@@ -75,6 +77,7 @@ type CallLogRow = {
   call_status: CallStatus;
   call_time: string;
   company: string | null;
+  email: string | null;
   meetLink: string | null;
 };
 
@@ -90,7 +93,7 @@ type SearchParams = {
   q?: string;
 };
 
-type InboundCallLogsProps = {
+type OutboundCallLogsProps = {
   searchParams: Promise<SearchParams>;
 };
 
@@ -123,6 +126,7 @@ function normalizeCallLogData(rows: CallLogApiRow[]): CallLogRow[] {
     call_status: row.call_status,
     call_time: new Date(row.call_time).toLocaleString(),
     company: row.company,
+    email: row?.email || null,
     meetLink: row.bookings?.meetLink || null,
   }));
 }
@@ -130,7 +134,7 @@ function normalizeCallLogData(rows: CallLogApiRow[]): CallLogRow[] {
 // -------------------- Component --------------------
 export default async function OutboundCallLogs({
   searchParams,
-}: InboundCallLogsProps) {
+}: OutboundCallLogsProps) {
   const token = await getAccessToken();
   const queryParams = await searchParams;
 
@@ -141,7 +145,7 @@ export default async function OutboundCallLogs({
   const response = await fetchTableData<CallLogsApiResponse>(
     `${
       env.API_BASE_URL
-    }/call-logs?callType=outgoing&page=${page}&limit=${limit} ${
+    }/call-logs?callType=incoming&page=${page}&limit=${limit} ${
       q ? `&q=${q}` : ""
     }`,
     {
@@ -151,6 +155,8 @@ export default async function OutboundCallLogs({
 
   // Handle array response from fetchTableData
   const apiResponse = Array.isArray(response) ? response[0] : response;
+
+
 
   const tableData: CallLogApiRow[] = apiResponse.data.data;
   const meta: ApiMeta = apiResponse.data.meta;
@@ -171,6 +177,7 @@ export default async function OutboundCallLogs({
     { key: "call_status", label: "Status" },
     { key: "call_time", label: "Time" },
     { key: "company", label: "Company" },
+    { key: "email", label: "Email" },
     { key: "meetLink", label: "Meet Link" },
   ] as const;
 
@@ -186,7 +193,10 @@ export default async function OutboundCallLogs({
 
   return (
     <div className="space-y-6">
-      <SearchField initialValue={queryParams.q} />
+      <div className="flex items-center justify-between print:hidden">
+              <SearchField initialValue={queryParams.q} />
+              <PrintButton/>
+            </div>
       <Table>
         <TableHeader>
           <TableRow>

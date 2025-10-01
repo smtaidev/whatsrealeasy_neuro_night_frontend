@@ -1,4 +1,5 @@
 import Button from "@/components/Button";
+import PrintButton from "@/components/PrintButton";
 import { env } from "@/env";
 import Pagination from "@/features/table/components/Pagination";
 import SearchField from "@/features/table/components/SearchField";
@@ -47,6 +48,7 @@ type CallLogApiRow = {
   createdAt: string;
   updatedAt: string;
   service: Service;
+  email: string | null;
   bookings: null | { meetLink: string };
 };
 
@@ -75,6 +77,7 @@ type CallLogRow = {
   call_status: CallStatus;
   call_time: string;
   company: string | null;
+  email: string | null;
   meetLink: string | null;
 };
 
@@ -123,6 +126,7 @@ function normalizeCallLogData(rows: CallLogApiRow[]): CallLogRow[] {
     call_status: row.call_status,
     call_time: new Date(row.call_time).toLocaleString(),
     company: row.company,
+    email: row?.email || null,
     meetLink: row.bookings?.meetLink || null,
   }));
 }
@@ -152,15 +156,15 @@ export default async function InboundCallLogs({
   // Handle array response from fetchTableData
   const apiResponse = Array.isArray(response) ? response[0] : response;
 
-  const tableData: CallLogApiRow[] = apiResponse?.data?.data;
-  const meta: ApiMeta = apiResponse?.data?.meta;
 
-  const tableDataRaw: CallLogApiRow[] =
-    tableData &&
-    tableData.map((item) => ({
-      ...item,
-      meetLink: item.bookings ? item.bookings.meetLink : null,
-    }));
+
+  const tableData: CallLogApiRow[] = apiResponse.data.data;
+  const meta: ApiMeta = apiResponse.data.meta;
+
+  const tableDataRaw: CallLogApiRow[] = tableData.map((item) => ({
+    ...item,
+    meetLink: item.bookings ? item.bookings.meetLink : null,
+  }));
 
   // Normalize data
   const normalizedData: CallLogRow[] = normalizeCallLogData(tableDataRaw);
@@ -173,6 +177,7 @@ export default async function InboundCallLogs({
     { key: "call_status", label: "Status" },
     { key: "call_time", label: "Time" },
     { key: "company", label: "Company" },
+    { key: "email", label: "Email" },
     { key: "meetLink", label: "Meet Link" },
   ] as const;
 
@@ -188,7 +193,10 @@ export default async function InboundCallLogs({
 
   return (
     <div className="space-y-6">
-      <SearchField initialValue={queryParams.q} />
+      <div className="flex items-center justify-between print:hidden">
+              <SearchField initialValue={queryParams.q} />
+              <PrintButton/>
+            </div>
       <Table>
         <TableHeader>
           <TableRow>
@@ -204,41 +212,30 @@ export default async function InboundCallLogs({
         </TableHeader>
 
         <TableBody>
-          <TableRow>
-            {apiResponse.data.data.length > 0 ? (
-              sorted.map((item: CallLogRow) => (
-                <TableRow key={item.id}>
-                  {tableHeader.map(({ key }) => {
-                    const value = item[key] ?? "N/A";
+          {sorted.map((item: CallLogRow) => (
+            <TableRow key={item.id}>
+              {tableHeader.map(({ key }) => {
+                const value = item[key] ?? "N/A";
 
-                    // Check if value is a valid URL
-                    let content: React.ReactNode = value;
-                    try {
-                      if (
-                        typeof value === "string" &&
-                        value.startsWith("http")
-                      ) {
-                        new URL(value); // will throw if invalid
-                        content = (
-                          <Button size="sm" asChild>
-                            <Link href={value}>Meet Link</Link>
-                          </Button>
-                        );
-                      }
-                    } catch {
-                      // Not a valid URL, keep as plain text
-                    }
+                // Check if value is a valid URL
+                let content: React.ReactNode = value;
+                try {
+                  if (typeof value === "string" && value.startsWith("http")) {
+                    new URL(value); // will throw if invalid
+                    content = (
+                      <Button size="sm" asChild>
+                        <Link href={value}>Meet Link</Link>
+                      </Button>
+                    );
+                  }
+                } catch {
+                  // Not a valid URL, keep as plain text
+                }
 
-                    return <TableBodyItem key={key}>{content}</TableBodyItem>;
-                  })}
-                </TableRow>
-              ))
-            ) : (
-              <TableBodyItem colSpan={tableHeader.length}>
-                <div className="text-center">No Data Found</div>
-              </TableBodyItem>
-            )}
-          </TableRow>
+                return <TableBodyItem key={key}>{content}</TableBodyItem>;
+              })}
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
 

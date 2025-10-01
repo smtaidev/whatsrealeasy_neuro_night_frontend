@@ -46,7 +46,7 @@ export default function Sidebar({ children }: React.PropsWithChildren) {
 
 function SidebarHeader() {
   return (
-    <div className="p-[var(--_sidebar-spacing)] flex gap-2 items-center relative min-h-[var(--_sidebar-header-height)] max-h-[var(--_sidebar-header-height)] bg-dark2 shadow-xs rounded-tr rounded-tl">
+    <div className="print:hidden p-[var(--_sidebar-spacing)] flex gap-2 items-center relative min-h-[var(--_sidebar-header-height)] max-h-[var(--_sidebar-header-height)] bg-dark2 shadow-xs rounded-tr rounded-tl">
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

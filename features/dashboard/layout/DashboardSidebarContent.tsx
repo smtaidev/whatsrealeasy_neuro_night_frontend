@@ -42,7 +42,7 @@ export default function SidebarContent({
 }: SidebarContentType) {
   const { isCollapsedSidebar, isExpanded } = useSidebar();
   return (
-    <div className="h-full flex flex-col justify-between gap-6 px-2 overflow-hidden">
+    <div className="h-full flex flex-col justify-between gap-6 px-2 overflow-hidden print:hidden">
       <ul className={cn("space-y-2 overflow-hidden")}>
         {mainItems.map((item) => {
           const Icon = icons[item.icon as keyof typeof icons];

@@ -47,7 +47,7 @@ export default function Pagination({
   );
 
   return (
-    <div className="flex items-center justify-center gap-2">
+    totalPages >= 1 && <div className="flex items-center justify-center gap-2">
       <span className="text-gray-400 text-sm">
         Showing <strong className="font-medium">{currentPage}</strong> of{" "}
         <strong className="font-medium">{totalPages}</strong>
