@@ -60,6 +60,7 @@ function SidebarHeader() {
           width={140}
           height={40}
           className="w-10 h-10"
+          unoptimized
         />
       </motion.div>
     </div>
