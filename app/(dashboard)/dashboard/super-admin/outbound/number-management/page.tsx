@@ -8,9 +8,10 @@ import { useAuth } from "@/context/AuthContext";
 import { env } from "@/env";
 import Calendar from "@/features/schedule/components/CalendarSchedule";
 import callEndWatcher from "@/features/schedule/components/callEndTime";
+import CallLogInfo from "@/features/schedule/components/CallLogInfo";
 import { useSchedule } from "@/features/schedule/context/ScheduleContext";
 import { LucideCloudUpload } from "lucide-react";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { toast } from "sonner";
 
 interface ServiceIdResponse {
@@ -25,7 +26,6 @@ export default function NumberManagementPage() {
     <div className="space-y-10">
       <HumanFilesManagement />
       <AIFilesManagement />
-      {/* <DirectCallManagement /> */}
     </div>
   );
 }
@@ -33,6 +33,12 @@ export default function NumberManagementPage() {
 function HumanFilesManagement() {
   const { state } = useSchedule();
   const auth = useAuth();
+  const [callNumbers, setCallNumbers] = useState(0);
+
+  useEffect(() => {
+    localStorage.getItem("callNumbers") &&
+      setCallNumbers(Number(localStorage.getItem("callNumbers")));
+  }, []);
 
   const [formData, setFormData] = useState({
     files: [] as File[],
@@ -41,8 +47,6 @@ function HumanFilesManagement() {
 
    const uploadUrl = `https://docs-outbound.advanceaimarketing.cloud/outbound/start-batch-call?starting_time=${state.callStartTime}&call_duration=${state.callDuration}&call_gap=${state.callGap}&total_numbers_in_each_batch=${state.batchNumber}`;
 
-
-
   const { uploadForm, uploading } = useFormUpload({
     url: uploadUrl,
   });
@@ -50,6 +54,38 @@ function HumanFilesManagement() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     toast.success("Uploading...");
+
+ if (formData.files.length === 0) {
+      toast.error("Please select a file");
+      return;
+    }
+
+    toast.success("Uploading...");
+
+    try {
+      const formDataToSend = new FormData();
+      formDataToSend.append('file', formData.files[0]);
+
+      const res = await fetch("/api/files", {
+        method: "POST",
+        body: formDataToSend,
+      });
+
+      const data = await res.json();
+      
+      if (data.success) {
+        setCallNumbers(data.count);
+        localStorage.setItem("callNumbers", data.count.toString());
+        toast.success(`Found ${data.count} numbers`);
+      } else {
+        toast.error(data.error || "Upload failed");
+      }
+    } catch (error) {
+      console.error("Upload error:", error);
+      toast.error("Failed to upload file");
+    }
+
+
     const getServiceId = await fetch(
       `${env.NEXT_PUBLIC_API_BASE_URL}/ai-agents?callType=outbound`,
       {
@@ -90,7 +126,10 @@ function HumanFilesManagement() {
           </div>
         </div>
         <div className="flex flex-col gap-4">
-          <div className="flex items-center justify-end relative">
+          <div className="flex items-center justify-end relative gap-4">
+            <CallLogInfo total_number_call_started={
+              callNumbers
+            } call_duration={state.callDuration}  />
             <Calendar />
           </div>
           <FileUpload

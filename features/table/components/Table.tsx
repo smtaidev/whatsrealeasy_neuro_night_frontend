@@ -69,14 +69,14 @@ export function TableHeaderItem({
       <button
         onClick={handleSort}
         className={cn(
-          "p-2 cursor-pointer inline-flex gap-1.5 items-center leading-0 font-semibold relative capitalize hover:text-white active:text-white after:absolute after:-inset-2",
+          "truncate p-2 cursor-pointer inline-flex flex-wrap gap-1.5 items-center leading-0 font-semibold relative capitalize hover:text-white active:text-white after:absolute after:-inset-2",
           { "text-white": isActive }
         )}
       >
         {formatHeaderLabel(prop)}
         <span
           className={cn(
-            "text-gray-100 translate-y-px transition transition-200 group-hover:opacity-100 rounded size-4 flex items-center justify-center",
+            "truncate text-gray-100 translate-y-px transition transition-200 group-hover:opacity-100 rounded size-4 flex flex-wrap items-center justify-center",
             { "opacity-100 group-hover:opacity-100 bg-slate-900/80": isActive }
           )}
         >
