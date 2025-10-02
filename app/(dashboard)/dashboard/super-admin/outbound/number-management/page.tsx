@@ -2,7 +2,6 @@
 
 import Button from "@/components/Button";
 import FileUpload, { useFormUpload } from "@/components/FileUpload";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/context/AuthContext";
