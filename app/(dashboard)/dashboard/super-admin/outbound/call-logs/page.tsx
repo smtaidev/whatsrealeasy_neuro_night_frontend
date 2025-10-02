@@ -145,13 +145,15 @@ export default async function OutboundCallLogs({
   const response = await fetchTableData<CallLogsApiResponse>(
     `${
       env.API_BASE_URL
-    }/call-logs?callType=incoming&page=${page}&limit=${limit} ${
+    }/call-logs?callType=outgoing&page=${page}&limit=${limit} ${
       q ? `&q=${q}` : ""
     }`,
     {
       headers: { Authorization: token || "" },
     }
   );
+
+
 
   // Handle array response from fetchTableData
   const apiResponse = Array.isArray(response) ? response[0] : response;

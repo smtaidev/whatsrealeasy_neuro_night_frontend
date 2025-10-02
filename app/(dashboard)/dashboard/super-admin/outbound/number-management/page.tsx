@@ -37,9 +37,12 @@ function HumanFilesManagement() {
   });
 
 
+   const uploadUrl = `https://docs-outbound.advanceaimarketing.cloud/outbound/start-batch-call?starting_time=${state.callStartTime}&call_duration=${state.callDuration}&call_gap=${state.callGap}&total_numbers_in_each_batch=${state.batchNumber}`;
+
+
 
   const { uploadForm, uploading } = useFormUpload({
-    url: `https://docs-outbound.advanceaimarketing.cloud/outbound/start-batch-call?starting_time=${state.callStartTime}&call_duration=${state.callDuration}&call_gap=${state.callGap}&total_numbers_in_each_batch=${state.batchNumber}`,
+    url: uploadUrl,
   });
 
   const handleSubmit = async (e: FormEvent) => {
