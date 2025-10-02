@@ -143,24 +143,37 @@ function CallTimePicker({
   initialSeconds?: number;
 }) {
   // --- derive initial values ---
-  const initialDate = initialSeconds
-    ? new Date(initialSeconds * 1000)
-    : new Date();
+  const getTimeFromSeconds = (seconds?: number) => {
+    const date = seconds ? new Date(seconds * 1000) : new Date();
+    let h = date.getHours();
+    const m = String(date.getMinutes()).padStart(2, "0");
+    const ampmVal = h >= 12 ? "PM" : "AM";
+    h = h % 12 || 12;
+    return {
+      hour: String(h),
+      minute: m,
+      ampm: ampmVal,
+    };
+  };
 
-  let h = initialDate.getHours();
-  const m = String(initialDate.getMinutes()).padStart(2, "0");
-  const ampmInitial = h >= 12 ? "PM" : "AM";
-  h = h % 12 || 12; // convert to 12h format
-  const hStr = String(h);
+  const initial = getTimeFromSeconds(initialSeconds);
 
   // --- state ---
-  const [hour, setHour] = React.useState(hStr);
-  const [minute, setMinute] = React.useState(m);
-  const [ampm, setAmPm] = React.useState(ampmInitial);
+  const [hour, setHour] = React.useState(initial.hour);
+  const [minute, setMinute] = React.useState(initial.minute);
+  const [ampm, setAmPm] = React.useState(initial.ampm);
+
+  // Sync state when initialSeconds changes
+  React.useEffect(() => {
+    const newTime = getTimeFromSeconds(initialSeconds);
+    setHour(newTime.hour);
+    setMinute(newTime.minute);
+    setAmPm(newTime.ampm);
+  }, [initialSeconds]);
 
   React.useEffect(() => {
     // trigger onChange once on mount
-    onChange?.(to24HourFormat(hStr, m, ampmInitial));
+    onChange?.(to24HourFormat(initial.hour, initial.minute, initial.ampm));
   }, []);
 
   const handleHour = (val: string | ((prevState: string) => string)) => {

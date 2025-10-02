@@ -2,6 +2,9 @@
 
 import Button from "@/components/Button";
 import FileUpload, { useFormUpload } from "@/components/FileUpload";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/context/AuthContext";
 import { env } from "@/env";
 import Calendar from "@/features/schedule/components/CalendarSchedule";
@@ -117,6 +120,8 @@ function AIFilesManagement() {
     onSuccess: () => toast.success("File uploaded successfully!"),
     onError: (error) => toast.error(error.message),
   });
+  const [firstMessage, setFirstMessage] = useState("")
+  
 
   const [formData, setFormData] = useState({
     files: [] as File[],
@@ -160,7 +165,7 @@ function AIFilesManagement() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          first_message: "Hi, I am Mehedi from Advance AI marketing",
+          first_message: firstMessage,
           max_duration_seconds: 240,
           stability: 0.9,
           speed: 0.9,
@@ -187,6 +192,10 @@ function AIFilesManagement() {
         </div>
       </div>
       <form onSubmit={handleSubmit}>
+        <div className="space-y-2 mb-4">
+          <Label>Greetings Message</Label>
+        <Textarea onChange={e => setFirstMessage(e.target.value)} placeholder="First message"/>
+        </div>
         <FileUpload
           onFilesChange={(files) => setFormData({ ...formData, files })}
           disabled={uploading}

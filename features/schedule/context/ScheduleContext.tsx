@@ -76,14 +76,25 @@ const reducer = (state: State, action: Action): State => {
         ...state,
         callGap: normalizeToSeconds("duration", action.payload.value),
       };
-    case "SET_CALL_START":
-      return {
-        ...state,
-        callStartTime: normalizeToSeconds(
-          action.payload.type,
-          action.payload.value
-        ),
-      };
+    case "SET_CALL_START": {
+  const startTime = normalizeToSeconds(
+    action.payload.type,
+    action.payload.value
+  );
+
+  let newEndTime = state.callEndTime;
+
+  // If current end time is not valid or too early, auto-adjust it
+  if (!newEndTime || newEndTime < startTime + 600) {
+    newEndTime = startTime + 600;
+  }
+
+  return {
+    ...state,
+    callStartTime: startTime,
+    callEndTime: newEndTime,
+  };
+};
     case "SET_CALL_END":
       return {
         ...state,
