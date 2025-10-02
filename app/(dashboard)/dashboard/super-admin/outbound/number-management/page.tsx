@@ -63,6 +63,7 @@ function HumanFilesManagement() {
 
     const getServiceIdResponse: ServiceIdResponse = await getServiceId.json();
 
+    console.log("getServiceId", getServiceIdResponse);
     const serviceId = getServiceIdResponse.data?.data?.[0]?.serviceId ?? null;
 
     const response = await uploadForm({
