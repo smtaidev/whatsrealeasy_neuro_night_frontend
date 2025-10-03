@@ -1,4 +1,5 @@
 import Button from "@/components/Button";
+import { DownloadExcelButton } from "@/components/DownloadExcel";
 import PrintButton from "@/components/PrintButton";
 import { env } from "@/env";
 import { TableFilter } from "@/features/table/components/Filter";
@@ -209,8 +210,12 @@ export default async function OutboundCallLogs({
           initialValue={queryParams.q}
         />
         <div className="flex gap-2 items-center">
-          <PrintButton />
-          <TableFilter /> {/* ✅ Pass initial value */}
+          <DownloadExcelButton<CallLogRow>
+            data={sorted}
+            headers={tableHeader}
+            fileName="CallLogs"
+          />
+          <TableFilter />
         </div>
       </div>
       <Table>
