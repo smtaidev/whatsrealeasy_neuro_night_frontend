@@ -36,8 +36,7 @@ function HumanFilesManagement() {
   const [callNumbers, setCallNumbers] = useState(0);
 
   useEffect(() => {
-    localStorage.getItem("callNumbers") &&
-      setCallNumbers(Number(localStorage.getItem("callNumbers")));
+    localStorage.getItem("callNumbers" as string) && setCallNumbers(Number(localStorage.getItem("callNumbers" as string)));
   }, []);
 
   const [formData, setFormData] = useState({
@@ -45,7 +44,7 @@ function HumanFilesManagement() {
   });
 
 
-   const uploadUrl = `https://docs-outbound.advanceaimarketing.cloud/outbound/start-batch-call?starting_time=${state.callStartTime}&call_duration=${state.callDuration}&call_gap=${state.callGap}&total_numbers_in_each_batch=${state.batchNumber}`;
+  const uploadUrl = `https://docs-outbound.advanceaimarketing.cloud/outbound/start-batch-call?starting_time=${state.callStartTime}&call_duration=${state.callDuration}&call_gap=${state.callGap}&total_numbers_in_each_batch=${state.batchNumber}`;
 
   const { uploadForm, uploading } = useFormUpload({
     url: uploadUrl,
@@ -55,7 +54,7 @@ function HumanFilesManagement() {
     e.preventDefault();
     toast.success("Uploading...");
 
- if (formData.files.length === 0) {
+    if (formData.files.length === 0) {
       toast.error("Please select a file");
       return;
     }
@@ -72,7 +71,7 @@ function HumanFilesManagement() {
       });
 
       const data = await res.json();
-      
+
       if (data.success) {
         setCallNumbers(data.count);
         localStorage.setItem("callNumbers", data.count.toString());
@@ -130,7 +129,7 @@ function HumanFilesManagement() {
           <div className="flex items-center justify-end relative gap-4">
             <CallLogInfo total_number_call_started={
               callNumbers
-            } call_duration={state.callDuration}  />
+            } call_duration={state.callDuration} />
             <Calendar />
           </div>
           <FileUpload
@@ -160,7 +159,7 @@ function AIFilesManagement() {
     onError: (error) => toast.error(error.message),
   });
   const [firstMessage, setFirstMessage] = useState("")
-  
+
 
   const [formData, setFormData] = useState({
     files: [] as File[],
@@ -233,7 +232,7 @@ function AIFilesManagement() {
       <form onSubmit={handleSubmit}>
         <div className="space-y-2 mb-4">
           <Label>Greetings Message</Label>
-        <Textarea onChange={e => setFirstMessage(e.target.value)} placeholder="First message"/>
+          <Textarea onChange={e => setFirstMessage(e.target.value)} placeholder="First message" />
         </div>
         <FileUpload
           onFilesChange={(files) => setFormData({ ...formData, files })}

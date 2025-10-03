@@ -39,8 +39,8 @@ export default function CallRouteModeSwitch() {
   const buttonText = isInbound
     ? "Switch to Outbound call"
     : isOutbound
-    ? "Switch to Inbound call"
-    : "Switch to Inbound call";
+      ? "Switch to Inbound call"
+      : "Switch to Inbound call";
 
   return (
     <div className="bg-blue rounded overflow-hidden">
@@ -81,18 +81,18 @@ export function SuccessModal({
   const title = inBound
     ? "Switching to Outbound Call"
     : outBound
-    ? "Switching to Inbound Call"
-    : "Processing Request";
+      ? "Switching to Inbound Call"
+      : "Processing Request";
   const processingMessage = inBound
     ? "Switching your call to Outbound..."
     : outBound
-    ? "Switching your call to Inbound..."
-    : "Processing your request...";
+      ? "Switching your call to Inbound..."
+      : "Processing your request...";
   const successMessage = inBound
     ? "Outbound call activated successfully!"
     : outBound
-    ? "Inbound call activated successfully!"
-    : "Request completed successfully!";
+      ? "Inbound call activated successfully!"
+      : "Request completed successfully!";
 
   useEffect(() => {
     if (!open) return;
@@ -116,7 +116,7 @@ export function SuccessModal({
     }, MODAL_DURATION);
 
     return () => clearTimeout(timer);
-  }, [open, inBound, outBound, router]);
+  }, [open, inBound, outBound, router, setIsSuccess, setShowSuccessText]);
 
   const handleClose = () => {
     onOpenChange(false);

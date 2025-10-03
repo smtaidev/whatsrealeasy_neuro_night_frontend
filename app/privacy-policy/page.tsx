@@ -21,8 +21,8 @@ export default function TermsPage() {
             <h2 className="text-xl font-semibold mb-2">1. Introduction</h2>
             <p>
               Welcome to <strong>Aigents</strong>. By using our services—such as
-              batch number processing, OAuth login/signup, and related features— 
-              you agree to these Terms. If you do not agree, please stop using 
+              batch number processing, OAuth login/signup, and related features—
+              you agree to these Terms. If you do not agree, please stop using
               the service immediately.
             </p>
           </div>
@@ -112,7 +112,7 @@ export default function TermsPage() {
               To the maximum extent permitted by law, Aigents is not responsible
               for any indirect, incidental, or consequential damages resulting
               from your use of the service. The platform is provided{" "}
-              <em>"as is"</em> and <em>"as available"</em>.
+              <em>`&quot;`as is`&quot;`</em> and <em>`&quot;`as available`&quot;`</em>.
             </p>
           </div>
 
@@ -148,7 +148,7 @@ export default function TermsPage() {
           {/* 13. Contact */}
           <div>
             <h2 className="text-xl font-semibold mb-2">13. Contact</h2>
-          <p>
+            <p>
               For questions about these Terms, please contact us at:{" "}
               <Link
                 href={`mailto:${env.NEXT_PUBLIC_OUTBOUND_EMAIL}`}

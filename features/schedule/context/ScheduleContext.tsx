@@ -32,13 +32,13 @@ type Action =
   | { type: "SET_CALL_DURATION"; payload: { type: "duration"; value: number } }
   | { type: "SET_CALL_GAP"; payload: { type: "duration"; value: number } }
   | {
-      type: "SET_CALL_START";
-      payload: { type: "time" | "datetime"; value: string };
-    }
+    type: "SET_CALL_START";
+    payload: { type: "time" | "datetime"; value: string };
+  }
   | {
-      type: "SET_CALL_END";
-      payload: { type: "time" | "datetime"; value: string };
-    }
+    type: "SET_CALL_END";
+    payload: { type: "time" | "datetime"; value: string };
+  }
   | { type: "SET_CALL_DATE"; payload: { type: "date"; value: string } }
   | { type: "SET_BATCH_NUMBER"; payload: string }
   | { type: "RESET"; payload: {} };
@@ -77,24 +77,24 @@ const reducer = (state: State, action: Action): State => {
         callGap: normalizeToSeconds("duration", action.payload.value),
       };
     case "SET_CALL_START": {
-  const startTime = normalizeToSeconds(
-    action.payload.type,
-    action.payload.value
-  );
+      const startTime = normalizeToSeconds(
+        action.payload.type,
+        action.payload.value
+      );
 
-  let newEndTime = state.callEndTime;
+      let newEndTime = state.callEndTime;
 
-  // If current end time is not valid or too early, auto-adjust it
-  if (!newEndTime || newEndTime < startTime + 600) {
-    newEndTime = startTime + 600;
-  }
+      // If current end time is not valid or too early, auto-adjust it
+      if (!newEndTime || newEndTime < startTime + 600) {
+        newEndTime = startTime + 600;
+      }
 
-  return {
-    ...state,
-    callStartTime: startTime,
-    callEndTime: newEndTime,
-  };
-};
+      return {
+        ...state,
+        callStartTime: startTime,
+        callEndTime: newEndTime,
+      };
+    };
     case "SET_CALL_END":
       return {
         ...state,
@@ -109,7 +109,7 @@ const reducer = (state: State, action: Action): State => {
         callDate: normalizeToSeconds("date", action.payload.value),
       };
     case "SET_BATCH_NUMBER":
-      return { ...state, batchNumber: Math.max(Number(action.payload), 15) };
+      return { ...state, batchNumber: Math.min(Number(action.payload), 15) };
     case "RESET":
       return DEFAULT_STATE;
     default:

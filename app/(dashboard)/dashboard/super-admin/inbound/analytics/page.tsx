@@ -1,12 +1,10 @@
-import { getIcon, dashboardStats } from "@/data/analyticsData";
+
 import { env } from "@/env";
-import AnalyticsChart from "@/features/analytics/Charts";
 import TopServicesTableInbound from "@/features/analytics/TopServicesInbound";
 import BookingTrendChart from "@/features/chart/components/CallChart";
 import Stats from "@/features/chart/components/Stats";
 import { getAccessToken } from "@/lib/getServerAuth";
 import { safeAsync } from "@/lib/safeAsync";
-import { cn } from "@/lib/utils";
 
 // Main analytics data object
 export interface AnalyticsData {
@@ -44,18 +42,18 @@ export interface AnalyticsData {
 // Monthly trends (chart + services)
 export interface MonthlyTrend {
   month:
-    | "Jan"
-    | "Feb"
-    | "Mar"
-    | "Apr"
-    | "May"
-    | "Jun"
-    | "Jul"
-    | "Aug"
-    | "Sep"
-    | "Oct"
-    | "Nov"
-    | "Dec";
+  | "Jan"
+  | "Feb"
+  | "Mar"
+  | "Apr"
+  | "May"
+  | "Jun"
+  | "Jul"
+  | "Aug"
+  | "Sep"
+  | "Oct"
+  | "Nov"
+  | "Dec";
   bookings: number;
   topServices: string[];
 }
