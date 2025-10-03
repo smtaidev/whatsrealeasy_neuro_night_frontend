@@ -1,3 +1,5 @@
+'use client'
+import { DateTime } from "luxon";
 import { logError } from "./logger";
 
 export default function normalizeToSeconds(
@@ -5,35 +7,25 @@ export default function normalizeToSeconds(
   value: string | number
 ): number {
   try {
-    const LA_TIMEZONE = "America/Los_Angeles";
+    // This will automatically use PST or PDT depending on the date
+    const PST = "America/Los_Angeles";
 
     switch (type) {
       case "date": {
-        const d = new Date(value as string);
-        // Create date string in LA timezone
-        const laDate = new Date(
-          d.toLocaleString("en-US", { timeZone: LA_TIMEZONE })
-        );
-        laDate.setHours(0, 0, 0, 0);
-        return Math.floor(laDate.getTime() / 1000);
+        const dt = DateTime.fromISO(value as string, { zone: PST }).startOf("day");
+        return Math.floor(dt.toSeconds());
       }
       case "time": {
         const [hours, minutes] = (value as string).split(":").map(Number);
-        // Get current date in LA timezone
-        const now = new Date();
-        const d = new Date(
-          now.toLocaleString("en-US", { timeZone: LA_TIMEZONE })
-        );
-        d.setHours(hours, minutes, 0, 0);
-        return Math.floor(d.getTime() / 1000);
+        // Get current date/time in PST timezone
+        const now = DateTime.now().setZone(PST);
+        const dt = now.set({ hour: hours, minute: minutes, second: 0, millisecond: 0 });
+        return Math.floor(dt.toSeconds());
       }
       case "datetime": {
-        const d = new Date(value as string);
-        // Convert to LA timezone
-        const laDateTime = new Date(
-          d.toLocaleString("en-US", { timeZone: LA_TIMEZONE })
-        );
-        return Math.floor(laDateTime.getTime() / 1000);
+        // Parse the datetime string as PST timezone
+        const dt = DateTime.fromISO(value as string, { zone: PST });
+        return Math.floor(dt.toSeconds());
       }
       case "duration": {
         return Math.floor(Number(value));

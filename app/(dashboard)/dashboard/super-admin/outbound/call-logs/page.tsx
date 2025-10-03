@@ -1,6 +1,7 @@
 import Button from "@/components/Button";
 import PrintButton from "@/components/PrintButton";
 import { env } from "@/env";
+import { TableFilter } from "@/features/table/components/Filter";
 import Pagination from "@/features/table/components/Pagination";
 import SearchField from "@/features/table/components/SearchField";
 import {
@@ -91,6 +92,7 @@ type SearchParams = {
   limit?: string;
   sort?: string;
   q?: string;
+  call_status?: string; // ✅ ADDED
 };
 
 type OutboundCallLogsProps = {
@@ -104,6 +106,7 @@ function parseSearchParams(params: SearchParams): {
   sortField: string;
   sortDirection: SortDirection;
   q?: string;
+  filter?: string;
 } {
   const page = Number(params.page) || DEFAULT_PAGE;
   const limit = Number(params.limit) || DEFAULT_ITEMS_PER_PAGE;
@@ -114,6 +117,8 @@ function parseSearchParams(params: SearchParams): {
     limit,
     sortField,
     sortDirection: sortDirection as SortDirection,
+    q: params.q, // ✅ FIXED: Now extracting from params
+    filter: params.call_status, // ✅ FIXED: Now extracting from params
   };
 }
 
@@ -138,27 +143,24 @@ export default async function OutboundCallLogs({
   const token = await getAccessToken();
   const queryParams = await searchParams;
 
-  const { page, limit, sortField, sortDirection, q } =
+  const { page, limit, sortField, sortDirection, q, filter } =
     parseSearchParams(queryParams);
 
   // Fetch typed data
   const response = await fetchTableData<CallLogsApiResponse>(
     `${
       env.API_BASE_URL
-    }/call-logs?callType=outgoing&page=${page}&limit=${limit} ${
-      q ? `&q=${q}` : ""
-    }`,
+    }/call-logs?callType=outgoing&page=${page}&limit=${limit}${
+      q ? `&searchTerm=${q}` : ""
+    }${filter ? `&call_status=${filter}` : ""}`,
     {
       headers: { Authorization: token || "" },
+      cache: "no-store",
     }
   );
 
-
-
   // Handle array response from fetchTableData
   const apiResponse = Array.isArray(response) ? response[0] : response;
-
-
 
   const tableData: CallLogApiRow[] = apiResponse.data.data;
   const meta: ApiMeta = apiResponse.data.meta;
@@ -196,9 +198,12 @@ export default async function OutboundCallLogs({
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between print:hidden">
-              <SearchField initialValue={queryParams.q} />
-              <PrintButton/>
-            </div>
+        <SearchField initialValue={queryParams.q} />
+        <div className="flex gap-2 items-center">
+          <PrintButton />
+          <TableFilter  /> {/* ✅ Pass initial value */}
+        </div>
+      </div>
       <Table>
         <TableHeader>
           <TableRow>

@@ -8,6 +8,7 @@ import { useSchedule } from "@/features/schedule/context/ScheduleContext";
 import { Input } from "@/components/ui/input";
 import Button from "@/components/Button";
 import { toast } from "sonner";
+import { DateTime } from "luxon";
 
 export default function ScheduleForm() {
   const { state, dispatch } = useSchedule();
@@ -128,11 +129,28 @@ export default function ScheduleForm() {
 
 // ---- Time Picker Component ----
 
-const to24HourFormat = (hour: string, minute: string, ampm: string) => {
+
+
+const to24HourFormat = (
+  hour: string, 
+  minute: string, 
+  ampm: string,
+  options?: { convertToPST?: boolean }
+) => {
   let h = parseInt(hour, 10);
   if (ampm === "PM" && h !== 12) h += 12;
   if (ampm === "AM" && h === 12) h = 0;
-  return `${String(h).padStart(2, "0")}:${minute}`;
+  
+  const time24 = `${String(h).padStart(2, "0")}:${minute.padStart(2, "0")}`;
+  
+  // If conversion to PST is needed
+  if (options?.convertToPST) {
+    const localTime = DateTime.fromFormat(time24, "HH:mm");
+    const pstTime = localTime.setZone("America/Los_Angeles");
+    return pstTime.toFormat("HH:mm");
+  }
+  
+  return time24;
 };
 
 function CallTimePicker({
