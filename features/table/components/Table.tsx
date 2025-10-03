@@ -76,7 +76,7 @@ export function TableHeaderItem({
         {formatHeaderLabel(prop)}
         <span
           className={cn(
-            "truncate text-gray-100 translate-y-px transition transition-200 group-hover:opacity-100 rounded size-4 flex flex-wrap items-center justify-center",
+            "truncate print:hidden text-gray-100 translate-y-px transition transition-200 group-hover:opacity-100 rounded size-4 flex flex-wrap items-center justify-center",
             { "opacity-100 group-hover:opacity-100 bg-slate-900/80": isActive }
           )}
         >
