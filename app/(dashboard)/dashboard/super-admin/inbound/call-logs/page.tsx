@@ -51,6 +51,8 @@ type CallLogApiRow = {
   service: Service;
   email: string | null;
   bookings: null | { meetLink: string };
+  
+  
 };
 
 type ApiMeta = {
@@ -78,6 +80,7 @@ type CallLogRow = {
   call_status: CallStatus;
   call_time: string;
   company: string | null;
+  serviceName: string | null
   email: string | null;
   meetLink: string | null;
 };
@@ -131,6 +134,7 @@ function normalizeCallLogData(rows: CallLogApiRow[]): CallLogRow[] {
     call_status: row.call_status,
     call_time: new Date(row.call_time).toLocaleString(),
     company: row.company,
+    serviceName: row.service.serviceName,
     email: row?.email || null,
     meetLink: row.bookings?.meetLink || null,
   }));
@@ -181,6 +185,8 @@ export default async function OutboundCallLogs({
     { key: "call_status", label: "Status" },
     { key: "call_time", label: "Time" },
     { key: "company", label: "Company" },
+    { key: "serviceName", label: "Service Name" },
+
     { key: "email", label: "Email" },
     { key: "meetLink", label: "Meet Link" },
   ] as const;
@@ -198,7 +204,7 @@ export default async function OutboundCallLogs({
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between print:hidden">
-        <SearchField initialValue={queryParams.q} />
+        <SearchField placeholder="Search by service name and company" initialValue={queryParams.q} />
         <div className="flex gap-2 items-center">
           <PrintButton />
           <TableFilter  /> {/* ✅ Pass initial value */}

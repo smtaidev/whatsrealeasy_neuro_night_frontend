@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { LucideLoader, LucideSearch } from "lucide-react";
 
 interface SearchFieldProps {
+  placeholder?: string,
   initialValue?: string;
   debounceTime?: number;
 }
@@ -12,6 +13,7 @@ interface SearchFieldProps {
 export default function SearchField({
   initialValue,
   debounceTime = 500,
+  placeholder,
 }: SearchFieldProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -47,7 +49,7 @@ export default function SearchField({
       </div>
       <input
         type="text"
-        placeholder="Search..."
+        placeholder={placeholder ? placeholder: 'Search...'}
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         className="border-none bg-transparent outline-none placeholder:text-muted-foreground focus-visible:ring-0 focus-visible:ring-offset-0 w-52 text-gray-100"
