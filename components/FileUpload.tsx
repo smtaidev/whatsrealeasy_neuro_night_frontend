@@ -16,7 +16,6 @@ import {
 import { ChangeEvent, DragEvent, useRef, useState } from "react";
 import Button from "@/components/Button";
 import { logError } from "@/lib/logger";
-import { toast } from "sonner";
 
 // ============================================================================
 // Types
@@ -83,11 +82,11 @@ export default function FileUpload({
 
   const currentFiles: FileWithProgress[] = isControlled
     ? value.map((file, idx) => ({
-        id: `${file.name}-${idx}`,
-        file,
-        progress: 0,
-        uploaded: false,
-      }))
+      id: `${file.name}-${idx}`,
+      file,
+      progress: 0,
+      uploaded: false,
+    }))
     : internalFiles;
 
   const validateFile = (file: File): string | null => {
@@ -263,19 +262,17 @@ export default function FileUpload({
   return (
     <div className={`flex flex-col gap-4 ${className}`}>
       <div
-        className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
-          isDragOver
-            ? "border-primary-500 bg-primary-500/10"
-            : "border-gray-600 hover:border-gray-500 bg-gray-800"
-        } ${disabled ? "opacity-50 pointer-events-none" : ""}`}
+        className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${isDragOver
+          ? "border-primary-500 bg-primary-500/10"
+          : "border-gray-600 hover:border-gray-500 bg-gray-800"
+          } ${disabled ? "opacity-50 pointer-events-none" : ""}`}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
       >
         <LucideCloudUpload
-          className={`mx-auto mb-4 ${
-            isDragOver ? "text-primary-500" : "text-gray-400"
-          }`}
+          className={`mx-auto mb-4 ${isDragOver ? "text-primary-500" : "text-gray-400"
+            }`}
           size={48}
         />
         <div className="mb-4">
@@ -414,8 +411,8 @@ function FileItem({
                 file.error
                   ? "text-rose-500"
                   : file.uploaded
-                  ? "text-green-500"
-                  : "text-gray-400"
+                    ? "text-green-500"
+                    : "text-gray-400"
               }
             >
               {file.error ||
@@ -425,9 +422,8 @@ function FileItem({
           {!file.error && (
             <div className="h-2 w-full overflow-hidden rounded-full bg-gray-600">
               <div
-                className={`h-full transition-all duration-300 ease-out ${
-                  file.uploaded ? "bg-green-500" : "bg-blue-500"
-                }`}
+                className={`h-full transition-all duration-300 ease-out ${file.uploaded ? "bg-green-500" : "bg-blue-500"
+                  }`}
                 style={{ width: `${file.progress}%` }}
               />
             </div>
@@ -491,7 +487,7 @@ export function useFormUpload({
     percentage: 0,
   });
 
- 
+
 
   const uploadForm = async (formData: Record<string, unknown>) => {
     setUploading(true);

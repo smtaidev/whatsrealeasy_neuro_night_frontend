@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function countNumericRows(data: any[]): number {
   return data.filter(row => {
     // Check if at least one value in the row is a number
