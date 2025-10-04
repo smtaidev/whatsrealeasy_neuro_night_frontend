@@ -16,7 +16,7 @@ export default function CalendarSchedule() {
     if (date) {
       dispatch({
         type: "SET_CALL_DATE",
-        payload: { type: "date", value: date.toDateString() },
+        payload: { value: date },
       });
     }
   }, [date, dispatch]);

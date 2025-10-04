@@ -32,14 +32,14 @@ type Action =
   | { type: "SET_CALL_DURATION"; payload: { type: "duration"; value: number } }
   | { type: "SET_CALL_GAP"; payload: { type: "duration"; value: number } }
   | {
-    type: "SET_CALL_START";
-    payload: { type: "time" | "datetime"; value: string };
-  }
+      type: "SET_CALL_START";
+      payload: { type: "time" | "datetime"; value: string };
+    }
   | {
-    type: "SET_CALL_END";
-    payload: { type: "time" | "datetime"; value: string };
-  }
-  | { type: "SET_CALL_DATE"; payload: { type: "date"; value: string } }
+      type: "SET_CALL_END";
+      payload: { type: "time" | "datetime"; value: string };
+    }
+  | { type: "SET_CALL_DATE"; payload: { value: Date } }
   | { type: "SET_BATCH_NUMBER"; payload: string }
   | { type: "RESET"; payload: {} };
 
@@ -56,7 +56,7 @@ const DEFAULT_STATE: State = {
   callGap: 10,
   callStartTime: 0,
   callEndTime: 0,
-  callDate: 0,
+  callDate: Math.floor(Date.now() / 1000),
   batchNumber: 7,
   MIN_CALL_DURATION: 150,
   MAX_CALL_DURATION: 600,
@@ -94,7 +94,7 @@ const reducer = (state: State, action: Action): State => {
         callStartTime: startTime,
         callEndTime: newEndTime,
       };
-    };
+    }
     case "SET_CALL_END":
       return {
         ...state,
@@ -106,7 +106,7 @@ const reducer = (state: State, action: Action): State => {
     case "SET_CALL_DATE":
       return {
         ...state,
-        callDate: normalizeToSeconds("date", action.payload.value),
+        callDate: dateToSeconds(action.payload.value),
       };
     case "SET_BATCH_NUMBER":
       return { ...state, batchNumber: Math.min(Number(action.payload), 15) };
@@ -167,4 +167,10 @@ export function useSchedule() {
     throw new Error("useSchedule must be used within a ScheduleProvider");
   }
   return context;
+}
+
+export function dateToSeconds(date?: Date | null): number {
+  if (!date || !(date instanceof Date)) return 0;
+  console.log(date, Math.floor(date.getTime() / 1000));
+  return Math.floor(date.getTime() / 1000);
 }
