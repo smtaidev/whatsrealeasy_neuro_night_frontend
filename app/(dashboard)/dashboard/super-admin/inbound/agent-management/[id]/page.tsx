@@ -121,7 +121,7 @@ export default function CreateInboundAgent() {
           </div>
 
           <Textarea
-            name="greetingMessage"
+            name="firstMessage"
             placeholder="Write a greeting message"
             value={formData.firstMessage}
             onChange={handleFormdataChange}
