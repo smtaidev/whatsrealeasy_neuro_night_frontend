@@ -216,14 +216,12 @@ export default async function InboundCallLogs({
                   <div className="flex justify-center">
                     <Button size="sm" asChild variant="ghost">
                       <Link
-                        href={`/dashboard/super-admin/inbound/agent-management/${
-                          item.id
-                        }?service=${encodeURIComponent(
-                          item.serviceName
+                        href={`/dashboard/super-admin/inbound/agent-management/${item.id.trim()}?service=${encodeURIComponent(
+                          item.serviceName.trim()
                         )}&phone=${encodeURIComponent(
-                          item.phoneNumber
+                          formatPhoneNumber(item.phoneNumber)
                         )}&message=${encodeURIComponent(
-                          item.first_message ?? ""
+                          item.first_message?.trim() ?? ""
                         )}`}
                       >
                         <SquarePen />
@@ -241,3 +239,10 @@ export default async function InboundCallLogs({
     </div>
   );
 }
+
+const formatPhoneNumber = (num: string) => {
+  if (!num) return "";
+  const cleaned = num.trim(); // remove trailing/leading spaces
+  if (cleaned.startsWith("+")) return cleaned;
+  return "+" + cleaned; // ensure + exists
+};
