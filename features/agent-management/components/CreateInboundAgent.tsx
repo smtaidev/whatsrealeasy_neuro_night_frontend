@@ -59,8 +59,14 @@ export default function CreateInboundAgent() {
             }
           );
 
-          const serviceCreateResponse: { db_record: { _id: string } } =
-            await serviceCreate.json();
+          const serviceCreateResponse:
+            | { db_record: { _id: string } }
+            | { message: string } = await serviceCreate.json();
+
+          if ("message" in serviceCreateResponse) {
+            toast.error(serviceCreateResponse.message);
+            return;
+          }
 
           // --- Upload file ---
           await uploadForm({

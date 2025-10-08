@@ -1,7 +1,7 @@
 import Button from "@/components/Button";
 import { DownloadExcelButton } from "@/components/DownloadExcel";
-import PrintButton from "@/components/PrintButton";
 import { env } from "@/env";
+import { CallTranscript } from "@/features/table/components/CallTranscriptViewer";
 import { TableFilter } from "@/features/table/components/Filter";
 import Pagination from "@/features/table/components/Pagination";
 import SearchField from "@/features/table/components/SearchField";
@@ -52,6 +52,7 @@ type CallLogApiRow = {
   service: Service;
   email: string | null;
   bookings: null | { meetLink: string };
+  call_duration: number | null;
 };
 
 type ApiMeta = {
@@ -82,6 +83,8 @@ type CallLogRow = {
   serviceName: string | null;
   area: string | null;
   email: string | null;
+  call_duration: number | null;
+  call_transcript: string | null;
   meetLink: string | null;
 };
 
@@ -137,6 +140,8 @@ function normalizeCallLogData(rows: CallLogApiRow[]): CallLogRow[] {
     area: row.area,
     serviceName: row.service.serviceName,
     email: row?.email || null,
+    call_duration: row.call_duration,
+    call_transcript: row.call_transcript,
     meetLink: row.bookings?.meetLink || null,
   }));
 }
@@ -189,6 +194,8 @@ export default async function OutboundCallLogs({
     { key: "serviceName", label: "Service Name" },
     { key: "area", label: "Area" },
     { key: "email", label: "Email" },
+    { key: "call_duration", label: "Duration" },
+    { key: "call_transcript", label: "Transcript" },
     { key: "meetLink", label: "Meet Link" },
   ] as const;
 
@@ -215,7 +222,7 @@ export default async function OutboundCallLogs({
             headers={tableHeader}
             fileName="CallLogs"
           />
-          <TableFilter />
+          <TableFilter /> {/* ✅ Pass initial value */}
         </div>
       </div>
       <Table>
@@ -240,17 +247,17 @@ export default async function OutboundCallLogs({
 
                 // Check if value is a valid URL
                 let content: React.ReactNode = value;
-                try {
-                  if (typeof value === "string" && value.startsWith("http")) {
-                    new URL(value); // will throw if invalid
-                    content = (
-                      <Button size="sm" asChild>
-                        <Link href={value}>Meet Link</Link>
-                      </Button>
-                    );
-                  }
-                } catch {
-                  // Not a valid URL, keep as plain text
+                if (typeof value === "string" && value.startsWith("http")) {
+                  new URL(value);
+                  content = (
+                    <Button size="sm" asChild>
+                      <Link href={value}>Meet Link</Link>
+                    </Button>
+                  );
+                }
+
+                if (key === "call_transcript") {
+                  content = <CallTranscript content={item.call_transcript} />;
                 }
 
                 return <TableBodyItem key={key}>{content}</TableBodyItem>;
