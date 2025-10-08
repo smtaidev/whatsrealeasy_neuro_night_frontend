@@ -52,6 +52,7 @@ type CallLogApiRow = {
   service: Service;
   email: string | null;
   bookings: null | { meetLink: string };
+  call_duration: number | null;
 };
 
 type ApiMeta = {
@@ -164,6 +165,8 @@ export default async function OutboundCallLogs({
     }
   );
 
+  console.log(response);
+
   // Handle array response from fetchTableData
   const apiResponse = Array.isArray(response) ? response[0] : response;
 
@@ -242,7 +245,7 @@ export default async function OutboundCallLogs({
                 let content: React.ReactNode = value;
                 try {
                   if (typeof value === "string" && value.startsWith("http")) {
-                    new URL(value); // will throw if invalid
+                    new URL(value);
                     content = (
                       <Button size="sm" asChild>
                         <Link href={value}>Meet Link</Link>

@@ -72,6 +72,7 @@ type AgentTableRow = {
   voiceName: string;
   createdAt: string;
   first_message: string;
+  serviceId: string;
 };
 
 type TableHeader = {
@@ -121,6 +122,7 @@ function normalizeAgentData(rows: AgentApiRow[]): AgentTableRow[] {
     voiceName: row.service.voiceName,
     createdAt: new Date(row.createdAt).toLocaleString(),
     first_message: row.first_message,
+    serviceId: row.service.id,
   }));
 }
 
@@ -149,6 +151,8 @@ export default async function InboundCallLogs({
       headers: { Authorization: token || "" },
     }
   );
+
+  console.log(response);
 
   // Handle array response from fetchTableData
   const apiResponse = Array.isArray(response) ? response[0] : response;
@@ -222,7 +226,7 @@ export default async function InboundCallLogs({
                           formatPhoneNumber(item.phoneNumber)
                         )}&message=${encodeURIComponent(
                           item.first_message?.trim() ?? ""
-                        )}`}
+                        )}&serviceId=${encodeURIComponent(item.serviceId)}`}
                       >
                         <SquarePen />
                       </Link>
