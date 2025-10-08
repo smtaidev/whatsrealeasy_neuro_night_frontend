@@ -20,7 +20,6 @@ export default function CreateInboundAgent() {
 
   const [formData, setFormData] = useState({
     serviceName: decodeURIComponent(searchParams.get("service") || ""),
-    phoneNumber: decodeURIComponent(searchParams.get("phone") || ""),
     firstMessage: decodeURIComponent(searchParams.get("message") || ""),
     files: [] as File[],
   });
@@ -53,7 +52,9 @@ export default function CreateInboundAgent() {
               },
               body: JSON.stringify({
                 serviceName: formData.serviceName,
-                phoneNumber: formData.phoneNumber,
+                phoneNumber: decodeURIComponent(
+                  searchParams.get("phone") || ""
+                ),
               }),
             }
           );
@@ -131,8 +132,8 @@ export default function CreateInboundAgent() {
                   name="phoneNumber"
                   type="text"
                   placeholder="Phone number"
-                  value={formData.phoneNumber}
-                  onChange={handleFormdataChange}
+                  value={decodeURIComponent(searchParams.get("phone") || "")}
+                  readOnly
                 />
               </Label>
             </div>
