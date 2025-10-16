@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils";
 import { LucideCloudUpload } from "lucide-react";
 import { FormEvent, useEffect, useState, useTransition } from "react";
 import { toast } from "sonner";
+import OutboundBatchJobsClient from "./_components/OutboundBatchJobs";
 
 interface ServiceIdResponse {
   data?: {
@@ -135,6 +136,7 @@ function HumanFilesManagement() {
           </div>
           <div className="flex flex-col gap-4">
             <div className="flex items-center justify-end relative gap-4">
+              <OutboundBatchJobsClient />
               <CallLogInfo
                 total_number_call_started={callNumbers}
                 call_duration={state.callDuration}

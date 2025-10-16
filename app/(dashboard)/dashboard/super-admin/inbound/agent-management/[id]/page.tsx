@@ -40,6 +40,9 @@ export default function CreateInboundAgent() {
     startTransition(async () => {
       await safeAsync(
         async () => {
+          console.log(formData);
+
+          // return;
           toast.success("Updating agent...");
 
           // --- Update service ---
