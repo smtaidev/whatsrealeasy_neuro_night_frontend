@@ -7,7 +7,7 @@ import {
   DialogTrigger,
   DialogHeader,
   DialogTitle,
-  DialogClose,
+  // DialogClose,
 } from "@/components/ui/dialog";
 import Button from "@/components/Button";
 
@@ -87,6 +87,7 @@ export default function BatchJobsTable() {
   useEffect(() => {
     async function loadJobs() {
       const response = await fetchBatchJobs(page, limit);
+      console.log(response);
       const jobsWithCost = response.jobs.map((job) => {
         const completedCalls = job.total_numbers;
         const duration = job.call_duration || 1;
@@ -114,30 +115,36 @@ export default function BatchJobsTable() {
   };
 
   // Sorted jobs
-  const sortedJobs = [...jobs].sort((a, b) => {
-    if (!sortField) return 0;
-    const valA = a[sortField as keyof typeof a];
-    const valB = b[sortField as keyof typeof b];
+  const sortedJobs = [...jobs]
+    .sort((a, b) => {
+      if (!sortField) return 0;
+      const valA = a[sortField as keyof typeof a];
+      const valB = b[sortField as keyof typeof b];
 
-    if (valA == null) return 1;
-    if (valB == null) return -1;
+      if (valA == null) return 1;
+      if (valB == null) return -1;
 
-    if (typeof valA === "number" && typeof valB === "number") {
-      return sortDirection === "asc" ? valA - valB : valB - valA;
-    }
+      if (typeof valA === "number" && typeof valB === "number") {
+        return sortDirection === "asc" ? valA - valB : valB - valA;
+      }
 
-    return sortDirection === "asc"
-      ? String(valA).localeCompare(String(valB))
-      : String(valB).localeCompare(String(valA));
-  });
+      return sortDirection === "asc"
+        ? String(valA).localeCompare(String(valB))
+        : String(valB).localeCompare(String(valA));
+    })
+    .filter((job) => job.status === "completed");
 
   const tableHeader: TableHeader[] = [
     { key: "calling_to", label: "Calling To" },
     { key: "start_time", label: "Schedule Start Time" },
-    { key: "estimated_cost", label: "Estimated Cost" },
     { key: "end_time", label: "End Time" },
+    { key: "total_numbers", label: "Total Numbers" },
     { key: "total_calls_completed", label: "Total Calls Completed" },
-    { key: "cost_of_completed_calls", label: "Cost of Completed Calls" },
+    { key: "estimated_cost", label: "Estimated Cost" },
+    {
+      key: "cost_of_completed_calls",
+      label: "Cost of Estimated Complete Calls",
+    },
   ];
 
   const totalCost = sortedJobs.reduce(
@@ -153,7 +160,7 @@ export default function BatchJobsTable() {
       <DialogContent className="w-full! max-w-6xl! overflow-auto bg-gray-900 z-[9999]">
         <DialogHeader>
           <DialogTitle>Batch Jobs Table</DialogTitle>
-          <DialogClose className="absolute top-2 right-2">✖</DialogClose>
+          {/* <DialogClose className="absolute top-2 right-2">✖</DialogClose> */}
         </DialogHeader>
 
         <table className="w-full border-collapse border mt-4 bg-gray-900">
@@ -192,6 +199,10 @@ export default function BatchJobsTable() {
                     value = value
                       ? new Date(value as string).toLocaleString()
                       : "N/A";
+                  }
+
+                  if (key === "calling_to") {
+                    value = value.toString().split(".")[0];
                   }
 
                   return (
