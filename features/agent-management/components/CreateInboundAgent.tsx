@@ -59,11 +59,25 @@ export default function CreateInboundAgent() {
             }
           );
 
-          const serviceCreateResponse:
-            | { db_record: { _id: string } }
-            | { message: string } = await serviceCreate.json();
+          if (!serviceCreate.ok) {
+            const errorBody = await serviceCreate.json().catch(() => null);
+            toast.error(
+              errorBody?.message || "Service creation failed. Please try again."
+            );
+            return;
+          }
 
-          if ("message" in serviceCreateResponse) {
+          const serviceCreateResponse: {
+            db_record: { _id: string };
+            message: string;
+          } = await serviceCreate.json();
+
+          if (
+            "message" in serviceCreateResponse &&
+            serviceCreateResponse.message.includes(
+              "service already exists with that phone number"
+            )
+          ) {
             toast.error(serviceCreateResponse.message);
             return;
           }
@@ -103,6 +117,11 @@ export default function CreateInboundAgent() {
               body: JSON.stringify(agentData.body),
             }
           );
+
+          if (!createAgent.ok) {
+            toast.error("Failed to create agent");
+            return;
+          }
 
           await createAgent.json();
           toast.success("Agent created successfully");
