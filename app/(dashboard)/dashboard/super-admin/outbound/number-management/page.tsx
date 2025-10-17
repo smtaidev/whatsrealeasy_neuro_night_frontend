@@ -24,6 +24,7 @@ interface ServiceIdResponse {
 
 export default function NumberManagementPage() {
   callEndWatcher();
+
   return (
     <div className="space-y-10">
       <HumanFilesManagement />
@@ -179,6 +180,27 @@ function AIFilesManagement() {
     files: [] as File[],
   });
 
+  useEffect(() => {
+    const r = async () => {
+      const getServiceId = await fetch(
+        `${env.NEXT_PUBLIC_API_BASE_URL}/ai-agents?callType=outbound`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: auth?.accessToken || "",
+          },
+        }
+      );
+
+      const firstMessage =
+        (await getServiceId.json()).data?.data?.[0]?.first_message ?? "";
+
+      setFirstMessage(firstMessage);
+    };
+    r();
+  }, []);
+
   const handleServiceId = async () => {
     const getServiceId = await fetch(
       `${env.NEXT_PUBLIC_API_BASE_URL}/ai-agents?callType=outbound`,
@@ -239,7 +261,7 @@ function AIFilesManagement() {
 
         await updateAgent.json();
 
-        toast.success("Agent created successfully!");
+        toast.success("Agent updated successfully!");
       } catch (err) {
         console.error("Error during handleSubmit:", err);
         toast.error("Something went wrong");
@@ -268,6 +290,7 @@ function AIFilesManagement() {
             <Textarea
               onChange={(e) => setFirstMessage(e.target.value)}
               placeholder="First message"
+              defaultValue={firstMessage}
             />
           </div>
           <FileUpload

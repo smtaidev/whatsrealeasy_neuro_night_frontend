@@ -1,5 +1,5 @@
 import { env } from "@/env";
-import TopServicesTableOutbound from "@/features/analytics/TopServicesOutbound";
+// import TopServicesTableOutbound from "@/features/analytics/TopServicesOutbound";
 import BookingTrendChart from "@/features/chart/components/CallChart";
 import Stats from "@/features/chart/components/Stats";
 import { getAccessToken } from "@/lib/getServerAuth";
@@ -91,15 +91,13 @@ export default async function AdminAnalyticsPage({
     );
     if (!response.ok) return Promise.reject("Failed request");
     const data = await response.json();
-    
+
     return data as AnalyticsApiResponse;
   });
 
   const data = (result.data?.success && result.data.data) as AnalyticsData;
 
-
-
-  if(!data) return <div className="text-center">No Data</div>
+  if (!data) return <div className="text-center">No Data</div>;
 
   return (
     <>
@@ -107,7 +105,7 @@ export default async function AdminAnalyticsPage({
       <div className="mt-14">
         <BookingTrendChart data={data.monthlyTrends} />
       </div>
-      <TopServicesTableOutbound searchParams={queryParams} />
+      {/* <TopServicesTableOutbound searchParams={queryParams} /> */}
     </>
   );
 }

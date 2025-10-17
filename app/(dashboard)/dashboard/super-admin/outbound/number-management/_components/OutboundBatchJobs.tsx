@@ -26,6 +26,7 @@ type BatchJob = {
   call_duration?: number;
   total_calls_completed?: number;
   cost_of_completed_calls?: number;
+  total_numbers_in_each_batch?: number;
 };
 
 type TableHeader = {
@@ -115,24 +116,22 @@ export default function BatchJobsTable() {
   };
 
   // Sorted jobs
-  const sortedJobs = [...jobs]
-    .sort((a, b) => {
-      if (!sortField) return 0;
-      const valA = a[sortField as keyof typeof a];
-      const valB = b[sortField as keyof typeof b];
+  const sortedJobs = [...jobs].sort((a, b) => {
+    if (!sortField) return 0;
+    const valA = a[sortField as keyof typeof a];
+    const valB = b[sortField as keyof typeof b];
 
-      if (valA == null) return 1;
-      if (valB == null) return -1;
+    if (valA == null) return 1;
+    if (valB == null) return -1;
 
-      if (typeof valA === "number" && typeof valB === "number") {
-        return sortDirection === "asc" ? valA - valB : valB - valA;
-      }
+    if (typeof valA === "number" && typeof valB === "number") {
+      return sortDirection === "asc" ? valA - valB : valB - valA;
+    }
 
-      return sortDirection === "asc"
-        ? String(valA).localeCompare(String(valB))
-        : String(valB).localeCompare(String(valA));
-    })
-    .filter((job) => job.status === "completed");
+    return sortDirection === "asc"
+      ? String(valA).localeCompare(String(valB))
+      : String(valB).localeCompare(String(valA));
+  });
 
   const tableHeader: TableHeader[] = [
     { key: "calling_to", label: "Calling To" },
@@ -140,15 +139,12 @@ export default function BatchJobsTable() {
     { key: "end_time", label: "End Time" },
     { key: "total_numbers", label: "Total Numbers" },
     { key: "total_calls_completed", label: "Total Calls Completed" },
+    { key: "status", label: "Status" },
     { key: "estimated_cost", label: "Estimated Cost" },
-    {
-      key: "cost_of_completed_calls",
-      label: "Cost of Estimated Complete Calls",
-    },
   ];
 
   const totalCost = sortedJobs.reduce(
-    (sum, job) => sum + (job.cost_of_completed_calls || 0),
+    (sum, job) => sum + (job.estimated_cost || 0),
     0
   );
 
@@ -188,17 +184,17 @@ export default function BatchJobsTable() {
                 {tableHeader.map(({ key }) => {
                   let value = job[key as keyof typeof job] ?? "N/A";
 
-                  if (
-                    key === "estimated_cost" ||
-                    key === "cost_of_completed_calls"
-                  ) {
+                  if (key === "estimated_cost") {
                     value = `$${Number(value).toFixed(2)}`;
                   }
 
                   if (key === "start_time" || key === "end_time") {
                     value = value
-                      ? new Date(value as string).toLocaleString()
-                      : "N/A";
+                      ? new Date(value as string).toLocaleString() ===
+                        "Invalid Date"
+                        ? "Not completed"
+                        : new Date(value as string).toLocaleString()
+                      : "Not completed";
                   }
 
                   if (key === "calling_to") {
