@@ -15,6 +15,7 @@ import { LucideCloudUpload } from "lucide-react";
 import { FormEvent, useEffect, useState, useTransition } from "react";
 import { toast } from "sonner";
 import OutboundBatchJobsClient from "./_components/OutboundBatchJobs";
+import { Input } from "@/components/ui/input";
 
 interface ServiceIdResponse {
   data?: {
@@ -175,6 +176,7 @@ function AIFilesManagement() {
     onError: (error) => toast.error(error.message),
   });
   const [firstMessage, setFirstMessage] = useState("");
+  const [model, setModel] = useState("");
 
   const [formData, setFormData] = useState({
     files: [] as File[],
@@ -252,7 +254,7 @@ function AIFilesManagement() {
               stability: 0.9,
               speed: 0.9,
               similarity_boost: 0.7,
-              llm: "gemini-2.5-flash",
+              llm: model,
               temperature: 0.9,
               daily_limit: 1000,
             }),
@@ -272,12 +274,23 @@ function AIFilesManagement() {
   return (
     <>
       <div className="flex gap-2 items-center border-b border-gray-700 mb-6 pb-6">
-        <LucideCloudUpload size={32} />
-        <div className="">
-          <h2 className="text-sm">AI Guide Document</h2>
-          <h3 className="text-xs">
-            Select and upload the files of your choice
-          </h3>
+        <div className="flex flex-wrap justify-between gap-4 w-full">
+          <div className="flex gap-2 items-center flex-1">
+            <LucideCloudUpload size={32} />
+            <div className="">
+              <h2 className="text-sm">AI Guide Document</h2>
+              <h3 className="text-xs">
+                Select and upload the files of your choice
+              </h3>
+            </div>
+          </div>
+          <div className="shrink">
+            <Input
+              onChange={(e) => setModel(e.target.value)}
+              value={model}
+              placeholder="Model name"
+            />
+          </div>
         </div>
       </div>
       <form onSubmit={handleSubmit}>
