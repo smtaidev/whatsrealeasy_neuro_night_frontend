@@ -100,7 +100,7 @@ export default function CreateInboundAgent() {
               stability: 0.9,
               speed: 0.9,
               similarity_boost: 0.7,
-              llm: "gemini-2.0-flash-lite",
+              llm: "gemini-2.5-flash",
               temperature: 0.9,
               daily_limit: 1000,
             },
